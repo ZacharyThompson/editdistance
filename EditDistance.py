@@ -27,6 +27,7 @@ class EditDist:
                 self.matrix[i][j] = min(up, left, diag)
 
 
+		# Return bottom right element
         return self.matrix[len(self.word2)][len(self.word1)]
 
     def printMatrix(self):
