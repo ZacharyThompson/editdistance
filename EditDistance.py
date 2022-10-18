@@ -20,7 +20,7 @@ class EditDist:
         for j in range(1, len(self.word2)+1):
             self._distanceMatrix[j][0] = j
 
-		# Fill out the rest of the matricies
+		# Fill out the the matricies
         for i in range(1, len(self.word1)+1):
             for j in range(1, len(self.word2)+1):
                 # Edit Distance Matrix
