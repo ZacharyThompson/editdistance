@@ -17,7 +17,6 @@ class TestStringMethods(unittest.TestCase):
         my_editdist = EditDist("TGCATA", "ATCTGAT")
         my_editdist.calculate()
         self.assertEqual(my_editdist.getEditDistance(), 5)
-        self.assertEqual(my_editdist._similarityMatrix[7][6], 4)
 
 
 if __name__ == '__main__':
