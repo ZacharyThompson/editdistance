@@ -6,9 +6,8 @@ class EditDist:
         self.word2 = word2
         # Initialize 2D matricies to all 0's
         # Distance Matrix is used to calculate the edit distance
-        # Similarity and Alignment Matrices are used for printing the alignment
+        # Alignment Matrix is used for printing the alignment
         self._distanceMatrix = [[0 for x in range(len(word1)+1)] for y in range(len(word2)+1)] 
-        self._similarityMatrix = [[0 for x in range(len(word1)+1)] for y in range(len(word2)+1)] 
         self._alignmentMatrix = [[0 for x in range(len(word1)+1)] for y in range(len(word2)+1)] 
         
     def calculate(self):
@@ -30,20 +29,9 @@ class EditDist:
                     Values[2] -= 1
                 self._distanceMatrix[j][i] = min(Values)
 
-                # Similarity Matrix
-                Values = [self._similarityMatrix[j-1][i], self._similarityMatrix[j][i-1], self._similarityMatrix[j-1][i-1]]
-                if self.word1[i-1] == self.word2[j-1]:
-                    Values[2] += 1
-                self._similarityMatrix[j][i] = max(Values)
-
                 # Alignment Matrix
                 # 1 = UP, 2 = LEFT, 3 = DIAG
-                if self._similarityMatrix[j][i] == self._similarityMatrix[j-1][i]:
-                    self._alignmentMatrix[j][i] = 1
-                elif self._similarityMatrix[j][i] == self._similarityMatrix[j][i-1]:
-                    self._alignmentMatrix[j][i] = 2
-                elif self._similarityMatrix[j][i] == self._similarityMatrix[j-1][i-1]+1:
-                    self._alignmentMatrix[j][i] = 3
+                self._alignmentMatrix[j][i] = Values.index(min(Values)) + 1
         return
 
     def getEditDistance(self):
@@ -52,47 +40,39 @@ class EditDist:
     def printDistanceMatrix(self):
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(self._distanceMatrix)
-        print('\n')
-        pp.pprint(self._similarityMatrix)
-        print('\n')
-        pp.pprint(self._alignmentMatrix)
         return
 
-    def _printAlignmentRec(self, i, j):
-        # Algorithm is a modified version of the PrintLCS algorithm on page 176
-        self.string1 = ""
-        self.string2 = ""
-        if i==0 and j==0:
-            self.string1 += self.word1[0]
-            self.string2 += self.word2[0]
-            return
-        if i == 0:
-            self.string1 += '_'
-            self.string2 += self.word2[j-1]
-            return
-        if j == 0:
-            self.string1 += self.word1[i-1]
-            self.string2 += '_'
-            return
-
+    def printAlignment(self):
         # i = horizontal, j = vertical
         # 1 = UP, 2 = LEFT, 3 = DIAG
-        if self._alignmentMatrix[j][i] == 3:
-            self._printAlignmentRec(i-1,j-1)
-            self.string1 += self.word1[i-1]
-            self.string2 += self.word2[j-1]
-        else:
-            if self._alignmentMatrix[j][i] == 2:
-                self._printAlignmentRec(i,j-1)
-                self.string1 += '_'
-                self.string2 += self.word2[j-1]
-            else:
-                self._printAlignmentRec(i-1,j)
-                self.string1 += self.word1[i-1]
-                self.string2 += '_'
+        i = len(self.word1)
+        j = len(self.word2)
+        string1 = ""
+        string2 = ""
 
-        return self.string1[::-1] + '\n' + self.string2[::-1]
+        # Walk through the alignment matrix starting from the bottom right
+        # and construct the strings to be printed
+        while i > 0 and j > 0:
+            if self._alignmentMatrix[j][i] == 3:
+                string1 = self.word1[i-1] + string1
+                string2 = self.word2[j-1] + string2
+                i-=1
+                j-=1
+            elif self._alignmentMatrix[j][i] == 2:
+                string1 = self.word1[i-1] + string1
+                string2 = '_' + string2
+                i-=1
+            elif self._alignmentMatrix[j][i] == 1:
+                string1 = '_' + string1
+                string2 = self.word2[j-1] + string2
+                j-=1
 
-    def printAlignment(self):
-        print(self._printAlignmentRec(len(self.word1), len(self.word2)))
+        if i == 0 and j !=0:
+            string1 = '_' + string1
+            string2 = self.word2[j-1] + string2
+        elif j == 0 and i != 0:
+            string1 = self.word1[i-1] + string1
+            string2 = '_' + string2
+
+        print(string1 + '\n' + string2)
         return
