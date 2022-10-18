@@ -6,8 +6,8 @@ def main():
     word1 = input("Enter word #1: ")
     word2 = input("Enter word #2: ")
     meme = EditDist(word1, word2)
-    meme.calculateEditDistance()
-    meme.printMatrix()
+    meme.calculate()
+    meme.printDistanceMatrix()
     meme.printAlignment()
     return
 
