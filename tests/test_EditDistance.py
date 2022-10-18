@@ -18,7 +18,6 @@ class TestStringMethods(unittest.TestCase):
         my_editdist.calculate()
         self.assertEqual(my_editdist.getEditDistance(), 5)
         self.assertEqual(my_editdist._similarityMatrix[7][6], 4)
-        my_editdist.printAlignment()
 
 
 if __name__ == '__main__':
